@@ -19,18 +19,16 @@ RUN apt-get update \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Install puppeteer so it's available in the container.
-RUN npm init -y &&  \
-    npm i puppeteer \
-    # Add user so we don't need --no-sandbox.
-    # same layer as npm install to keep re-chowned files from using up several hundred MBs more space
-    && groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
-    && mkdir -p /home/pptruser/Downloads \
-    && chown -R pptruser:pptruser /home/pptruser \
-    && chown -R pptruser:pptruser /home/site/wwwroot
+# If running Docker >= 1.13.0 use docker run's --init arg to reap zombie processes, otherwise
+# uncomment the following lines to have `dumb-init` as PID 1
+# ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_x86_64 /usr/local/bin/dumb-init
+# RUN chmod +x /usr/local/bin/dumb-init
+# ENTRYPOINT ["dumb-init", "--"]
 
-# Run everything after as non-privileged user.
-USER pptruser
+RUN npm install 
+# NPM 利用プロジェクトにおける ユーザー名前空間再割当てエラーに対する対策
+# See https://jpazpaas.github.io/blog/2023/02/15/Docker-User-Namespace-remapping-issues.html#npm-%E5%88%A9%E7%94%A8%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B-%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E5%90%8D%E5%89%8D%E7%A9%BA%E9%96%93%E5%86%8D%E5%89%B2%E5%BD%93%E3%81%A6%E3%82%A8%E3%83%A9%E3%83%BC
+# && find /home/site/wwwroot/node_modules ! -user root | xargs --no-run-if-empty chown root:root
 
 CMD ["google-chrome-stable"]
 
