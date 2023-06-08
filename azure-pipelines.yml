@@ -3,7 +3,7 @@ trigger: none
 resources:
   - repo: self
 
-# Pipelineが以下の変数を参照できるように設定してください。
+# Set variables to recognize where to deploy
 # - AzureServiceConnectionId: Service Connection Name or UUID
 # - FunctionAppName: The resource name of Azure Functions
 # - ACRRepositoryName: The repository name of ACR. This is also used as an Docker image name
