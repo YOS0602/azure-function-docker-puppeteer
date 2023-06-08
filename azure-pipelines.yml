@@ -1,0 +1,54 @@
+trigger: none
+
+resources:
+  - repo: self
+
+variables:
+  pool: 'ubuntu-latest'
+  Azure.ServiceConnectionId: $(AzureServiceConnectionId)
+  FunctionApp.Name: $(FunctionAppName)
+  ACR.Name: $(ACRRepositoryName)
+  ACR.ImageName: '$(ACR.Name):$(Build.BuildId)'
+  ACR.FullName: '$(ACRResourceName).azurecr.io'
+
+jobs:
+  - job: BuildAndPushImage
+    displayName: Build And Push an Docker Image
+    condition: succeeded()
+
+    pool:
+      vmImage: $(pool)
+
+    steps:
+      - task: Docker@1
+        displayName: 'Build an image'
+        inputs:
+          azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+          azureContainerRegistry: '$(ACR.FullName)'
+          imageName: '$(ACR.ImageName)'
+          command: build
+          dockerFile: '$(Build.SourcesDirectory)/Dockerfile'
+
+      - task: Docker@1
+        displayName: 'Push an image'
+        inputs:
+          azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+          azureContainerRegistry: '$(ACR.FullName)'
+          imageName: '$(ACR.ImageName)'
+          command: push
+
+  - job: UpdateAppServiceConfiguration
+    displayName: Update AppService Configuration to Deploy an Image
+    dependsOn: BuildAndPushImage
+    condition: or(succeeded(), eq(dependencies.BuildAndPushImage.result, 'Succeeded'))
+
+    pool:
+      vmImage: $(pool)
+
+    steps:
+      - task: AzureFunctionAppContainer@1
+        displayName: 'Azure Function App on Container Deploy: $(FunctionApp.Name)'
+        inputs:
+          azureSubscription: '$(Azure.ServiceConnectionId)'
+          appName: $(FunctionApp.Name)
+          imageName: '$(ACR.FullName)/$(ACR.ImageName)'
