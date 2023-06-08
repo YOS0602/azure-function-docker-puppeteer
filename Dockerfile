@@ -27,9 +27,7 @@ RUN npm init -y &&  \
     && groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
     && mkdir -p /home/pptruser/Downloads \
     && chown -R pptruser:pptruser /home/pptruser \
-    && chown -R pptruser:pptruser /home/site/wwwroot/node_modules \
-    && chown -R pptruser:pptruser /home/site/wwwroot/package.json \
-    && chown -R pptruser:pptruser /home/site/wwwroot/package-lock.json
+    && chown -R pptruser:pptruser /home/site/wwwroot
 
 # Run everything after as non-privileged user.
 USER pptruser
