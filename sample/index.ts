@@ -15,7 +15,7 @@ const httpTrigger: AzureFunction = async function (
         width: 1200,
         height: 900,
       },
-      // WindowsPCでデバッグするときはコメントアウトを外す
+      // Uncomment when debug on windows machine
       // See https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-windows
       // ignoreDefaultArgs: ['--disable-extensions'],
     });
@@ -28,6 +28,7 @@ const httpTrigger: AzureFunction = async function (
     const url = req.query.url || 'https://google.com/';
 
     const page = await browser!.newPage();
+    // Request japanese site
     await page.setExtraHTTPHeaders({
       'Accept-Language': 'ja-JP',
     });

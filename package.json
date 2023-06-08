@@ -15,8 +15,7 @@
   "devDependencies": {
     "@azure/functions": "^3.5.1",
     "@types/node": "^16.18.34",
-    "@types/puppeteer": "^7.0.4",
-    "azure-functions-core-tools": "^4.x",
+    "azure-functions-core-tools": "^4.0.5198",
     "typescript": "^4.9.5"
   },
   "author": "YOS0602 <yoshitaka.t.biz@gmail.com> (https://github.com/YOS0602)",
