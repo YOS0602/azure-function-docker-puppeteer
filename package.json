@@ -1,0 +1,26 @@
+{
+  "name": "azure-function-docker-puppeteer",
+  "version": "1.0.0",
+  "description": "This is the sample repo. Using docker image to run puppeteer application for azure functions.",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "prestart": "npm run build",
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "puppeteer": "^20.5.0"
+  },
+  "devDependencies": {
+    "@azure/functions": "^3.5.1",
+    "@types/node": "^16.18.34",
+    "@types/puppeteer": "^7.0.4",
+    "azure-functions-core-tools": "^4.x",
+    "typescript": "^4.9.5"
+  },
+  "author": "YOS0602 <yoshitaka.t.biz@gmail.com> (https://github.com/YOS0602)",
+  "volta": {
+    "node": "18.15.0"
+  }
+}
